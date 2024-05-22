@@ -69,6 +69,5 @@ def plot_scatter_chart(df,location):
     plt.ylabel("price in lacks")
     plt.title(location)
     plt.legend()
-
 print(plot_scatter_chart(df5,"Hebbal"))
 # print(df6.price_per_sqft.describe())
