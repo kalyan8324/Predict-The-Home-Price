@@ -71,3 +71,20 @@ def plot_scatter_chart(df,location):
     plt.legend()
 print(plot_scatter_chart(df5,"Hebbal"))
 # print(df6.price_per_sqft.describe())
+
+def remove_bhk_outliers(df):
+    exclude_indices = np.array([])
+    for location, location_df in df.groupby('location'):
+        bhk_stats = {}
+        for bhk, bhk_df in location_df.groupby('bhk'):
+            bhk_stats[bhk] = {
+                'mean': np.mean(bhk_df.price_per_sqft),
+                'std': np.std(bhk_df.price_per_sqft),
+                'count': bhk_df.shape[0]
+            }
+        for bhk, bhk_df in location_df.groupby('bhk'):
+            stats = bhk_stats.get(bhk-1)
+            if stats and stats['count']>5:
+                exclude_indices = np.append(exclude_indices, bhk_df[bhk_df.price_per_sqft<(stats['mean'])].index.values)
+    return df.drop(exclude_indices,axis='index')
+df8 = remove_bhk_outliers(df6)
